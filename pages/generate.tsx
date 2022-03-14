@@ -8,7 +8,7 @@ const Phrase: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleLoading = () => {
-    setLoading(true)
+    setLoading(true);
   };
 
   return (
@@ -31,3 +31,5 @@ const Phrase: NextPage = () => {
 };
 
 export default Phrase;
+
+// today stomach fish toilet nominee student volcano access network divert universe happy

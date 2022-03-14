@@ -5,42 +5,36 @@ import { Form, Input, Button } from "antd";
 import { useGlobalState } from "../context";
 import { LoadingOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import * as Bip39 from "bip39";
+import b58 from "b58";
 import { Keypair } from "@solana/web3.js";
 
 // Import Bip39 to convert a phrase to a seed:
 
 // Import the Keypair class from Solana's web3.js library:
 
-const Recover: NextPage = () => {
+const ImportAccount: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const router = useRouter();
 
-  const { account, setAccount, setMnemonic } = useGlobalState();
+  const { account, setAccount } = useGlobalState();
 
   // *Step 6*: implement a function that recovers an account based on a mnemonic phrase
   const handleImport = async (values: any) => {
     setLoading(true);
-    const inputMnemonic = values.phrase.trim().toLowerCase();
-    setMnemonic(inputMnemonic);
 
-    const seed = Bip39.mnemonicToSeedSync(inputMnemonic).slice(0, 32);
-    const importedAccount = Keypair.fromSeed(seed);
-    setAccount(importedAccount);
+    const address = b58.decode(values.secret);
+    console.log("ADD=========", address);
+    const account = Keypair.fromSecretKey(address);
+
+    console.log(account.publicKey.toString());
   };
-
-  useEffect(() => {
-    if (account) {
-      router.push("/wallet");
-    }
-  }, [account, router]);
 
   return (
     <>
       <h1 className={"title"}>Import Wallet</h1>
 
-      <p>Enter your secret recovery phrase here to restore your wallet.</p>
+      <p>Enter your private key here to restore your account.</p>
 
       <StyledForm
         form={form}
@@ -51,27 +45,25 @@ const Recover: NextPage = () => {
       >
         <div style={{ overflow: "hidden" }}>
           <Form.Item
-            name="phrase"
-            label="Secret Recovery Phrase"
-            rules={[
-              {
-                required: true,
-                message: "Please enter your recovery phrase",
-              },
-              {
-                validator(_, value) {
-                  if (value.trim().split(" ").length === 12) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("Recovery phrase must be 12 words long")
-                  );
-                },
-              },
-            ]}
+            name="secret"
+            label="Secret Key"
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: "Please enter your secret key",
+            //   },
+            //   {
+            //     validator(_, value) {
+            //       if (value.trim().split(" ").length === 12) {
+            //         return Promise.resolve();
+            //       }
+            //       return Promise.reject(new Error("Invalid priate key"));
+            //     },
+            //   },
+            // ]}
           >
             <Input
-              placeholder="Paste secret recovery phrase from clipboard"
+              placeholder="Paste secret key from clipboard"
               style={{ minWidth: "500px" }}
             />
           </Form.Item>
@@ -106,4 +98,4 @@ const StyledForm = styled(Form)`
   align-items: center;
 `;
 
-export default Recover;
+export default ImportAccount;
