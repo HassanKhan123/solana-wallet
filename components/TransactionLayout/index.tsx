@@ -48,11 +48,6 @@ const TransactionModal = (): ReactElement => {
   const [transactionSig, setTransactionSig] = useState<string>("");
 
   const onFieldChange = (field: string, value: string) => {
-    if (field === "amount" && !!value.match(/\D+/)) {
-      console.log(value);
-      return;
-    }
-
     setForm({
       ...form,
       [field]: value,
@@ -71,7 +66,7 @@ const TransactionModal = (): ReactElement => {
       const instructions = SystemProgram.transfer({
         fromPubkey: account.publicKey,
         toPubkey: new PublicKey(form.to),
-        lamports: form.amount,
+        lamports: form.amount * 1000000000,
       });
 
       const transaction = new Transaction().add(instructions);

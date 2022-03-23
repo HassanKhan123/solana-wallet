@@ -20,6 +20,7 @@ import {
 import { Account, Keypair } from "@solana/web3.js";
 import Link from "next/link";
 import { AccountLayout, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import b58 from "b58";
 
 const { Paragraph } = Typography;
 
@@ -35,6 +36,10 @@ const Wallet: NextPage = () => {
   useEffect(() => {
     connection = new web3.Connection(web3.clusterApiUrl("devnet"), "confirmed");
   }, []);
+
+  if (account) {
+    console.log("SECRET====", b58.encode(account?.secretKey));
+  }
 
   useEffect(() => {
     if (!account) {
@@ -125,8 +130,12 @@ const Wallet: NextPage = () => {
   };
 
   const createAccount = async () => {
-    const account = accountFromSeed(mnemonic, 2);
-    console.log("ACCOUNT============", account.publicKey.toString());
+    const account = accountFromSeed(mnemonic, 3);
+    console.log(
+      "ACCOUNT============",
+      account.publicKey.toString(),
+      b58.encode(account.secretKey)
+    );
   };
 
   const accountFromSeed = (
@@ -165,6 +174,7 @@ const Wallet: NextPage = () => {
       {account && (
         <Dashboard>
           <h1>Dashboard</h1>
+          <h2>Seed Phrase: {mnemonic}</h2>
 
           <Paragraph
             copyable={{ text: account.publicKey.toString(), tooltips: `Copy` }}

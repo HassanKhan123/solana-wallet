@@ -7,6 +7,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import b58 from "b58";
 import { Keypair } from "@solana/web3.js";
+import { refreshBalance } from "../utils";
 
 // Import Bip39 to convert a phrase to a seed:
 
@@ -28,6 +29,8 @@ const ImportAccount: NextPage = () => {
     const account = Keypair.fromSecretKey(address);
 
     console.log(account.publicKey.toString());
+    console.log("BAL======", await refreshBalance("devnet", account));
+    setLoading(false);
   };
 
   return (

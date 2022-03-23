@@ -16,7 +16,6 @@ const refreshBalance = async (network: Cluster, account: Keypair | null) => {
     const connection = new Connection(clusterApiUrl(network), "confirmed");
     const publicKey = account.publicKey;
     const balance = await connection.getBalance(publicKey);
-    console.log("BALANCE=========", balance);
     return balance / LAMPORTS_PER_SOL;
   } catch (error) {
     console.log(error);
